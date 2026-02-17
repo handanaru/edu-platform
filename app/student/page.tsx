@@ -4,9 +4,9 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 
 const missions = [
-  { title: "중2 함수 개념 정리", due: "오늘 21:00", status: "진행중", progress: 42 },
-  { title: "연립방정식 응용 10문제", due: "내일 18:00", status: "미시작", progress: 0 },
-  { title: "서술형 오답노트 복습", due: "목요일 20:00", status: "완료", progress: 100 },
+  { title: "중2 함수 개념 정리", due: "오늘 21:00", status: "진행중", progress: 42, remain: "약 35분" },
+  { title: "연립방정식 응용 10문제", due: "내일 18:00", status: "미시작", progress: 0, remain: "약 50분" },
+  { title: "서술형 오답노트 복습", due: "목요일 20:00", status: "완료", progress: 100, remain: "완료" },
 ];
 
 const wrongNote = [
@@ -37,6 +37,8 @@ const statusClass: Record<string, string> = {
 
 export default function StudentPage() {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [uploadOpen, setUploadOpen] = useState(false);
+  const [activeMenu, setActiveMenu] = useState("dashboard");
 
   const linePath = useMemo(() => {
     const width = 260;
@@ -45,6 +47,12 @@ export default function StudentPage() {
     const mapY = (v: number) => Math.round(height - ((v - 60) / 40) * 72 - 10);
     return growth.map((v, i) => `${i === 0 ? "M" : "L"} ${Math.round(i * step)} ${mapY(v)}`).join(" ");
   }, []);
+
+  const jump = (id: string, menu: string) => {
+    setActiveMenu(menu);
+    const el = document.getElementById(id);
+    el?.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
 
   return (
     <main className="min-h-screen bg-[#F8F9FA] text-slate-900">
@@ -56,12 +64,12 @@ export default function StudentPage() {
           </div>
 
           <nav className="space-y-1 text-sm">
-            <button className="w-full rounded-lg bg-indigo-50 px-3 py-2 text-left font-semibold text-indigo-700">대시보드</button>
-            <button className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">오늘의 미션</button>
-            <button className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">학습 리포트</button>
-            <button className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">AI 오답 노트</button>
-            <button className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">제출 내역</button>
-            <button className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">계정 관리</button>
+            <button onClick={() => jump("section-dashboard", "dashboard")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "dashboard" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>대시보드</button>
+            <button onClick={() => jump("section-mission", "mission")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "mission" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>오늘의 미션</button>
+            <button onClick={() => jump("section-report", "report")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "report" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>학습 리포트</button>
+            <button onClick={() => jump("section-wrongnote", "wrong" )} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "wrong" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>AI 오답 노트</button>
+            <button onClick={() => jump("section-submission", "submit")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "submit" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>제출 내역</button>
+            <button onClick={() => alert("계정 관리 기능은 다음 라운드에서 연결할게.")} className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">계정 관리</button>
           </nav>
 
           <div className="mt-10 border-t border-slate-200 pt-4">
@@ -69,7 +77,7 @@ export default function StudentPage() {
           </div>
         </aside>
 
-        <section className="px-6 py-8 lg:px-10">
+        <section className="px-6 py-8 lg:px-10" id="section-dashboard">
           <header className="mb-6 flex flex-wrap items-start justify-between gap-3">
             <div>
               <h1 className="text-3xl font-bold">학습 대시보드</h1>
@@ -77,13 +85,13 @@ export default function StudentPage() {
             </div>
             <div className="flex items-center gap-2">
               <button className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">🔔</button>
-              <button className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">AI 오답노트 열기</button>
-              <button className="h-11 rounded-xl bg-orange-500 px-4 font-semibold text-white hover:bg-orange-400">선생님과 실시간 연결</button>
-              <button className="h-11 rounded-xl bg-indigo-600 px-4 font-semibold text-white hover:bg-indigo-500">풀이 사진 업로드</button>
+              <button onClick={() => jump("section-wrongnote", "wrong")} className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">AI 오답노트 열기</button>
+              <Link href="/teacher/live?from=student" className="h-11 rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-400">선생님과 실시간 연결</Link>
+              <button onClick={() => setUploadOpen(true)} className="h-11 rounded-xl bg-indigo-600 px-4 font-semibold text-white hover:bg-indigo-500">풀이 사진 업로드</button>
             </div>
           </header>
 
-          <section className="mb-5 grid gap-3 md:grid-cols-3">
+          <section className="mb-5 grid gap-3 md:grid-cols-3" id="section-report">
             {reports.map((r) => (
               <article key={r.label} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                 <p className="text-xs text-slate-500">{r.label}</p>
@@ -94,7 +102,7 @@ export default function StudentPage() {
 
           <div className="grid gap-5 xl:grid-cols-[1.5fr_.9fr]">
             <section className="space-y-4">
-              <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" id="section-mission">
                 <h2 className="text-lg font-semibold">오늘의 미션</h2>
                 <div className="mt-4 space-y-4">
                   {missions.map((m) => (
@@ -109,13 +117,13 @@ export default function StudentPage() {
                       <div className="mt-3 h-2 overflow-hidden rounded-full bg-slate-200">
                         <div className="h-full rounded-full bg-indigo-500" style={{ width: `${m.progress}%` }} />
                       </div>
-                      <p className="mt-2 text-xs text-slate-500">진행률 {m.progress}%</p>
+                      <p className="mt-2 text-xs text-slate-500">진행률 {m.progress}% · 남은 시간 {m.remain}</p>
                     </div>
                   ))}
                 </div>
               </article>
 
-              <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" id="section-submission">
                 <h2 className="text-lg font-semibold">제출 내역</h2>
                 <div className="mt-3 space-y-2">
                   {submissions.map((s) => (
@@ -147,7 +155,7 @@ export default function StudentPage() {
                 </svg>
               </article>
 
-              <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm" id="section-wrongnote">
                 <h3 className="text-base font-semibold">AI 오답 노트</h3>
                 <div className="mt-3 space-y-2">
                   {wrongNote.map((w) => (
@@ -156,7 +164,7 @@ export default function StudentPage() {
                       <p className="mt-1 text-xs text-slate-600">오류 원인: {w.reason}</p>
                       <div className="mt-2 flex items-center justify-between">
                         <p className="text-xs text-indigo-700">재풀이 권장: {w.retry}</p>
-                        <button className="rounded-md border border-slate-300 px-2 py-1 text-xs hover:bg-white">유사 문제 풀기</button>
+                        <button onClick={() => alert(`${w.unit} 유사 문제 세트를 불러올게.`)} className="rounded-md border border-slate-300 px-2 py-1 text-xs hover:bg-white">유사 문제 풀기</button>
                       </div>
                     </div>
                   ))}
@@ -178,6 +186,16 @@ export default function StudentPage() {
             <p className="mt-2 text-sm text-slate-600">선생님 음성 피드백: “2번 풀이에서 식 정리 순서만 고치면 정답이야.”</p>
             <p className="mt-2 text-sm text-slate-600">판서 캡처: 함수 그래프 교점 표시 완료</p>
             <button className="mt-4 h-10 w-full rounded-lg bg-indigo-600 text-white" onClick={() => setFeedbackOpen(false)}>닫기</button>
+          </div>
+        </div>
+      )}
+
+      {uploadOpen && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/35 p-4" onClick={() => setUploadOpen(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h4 className="text-lg font-semibold">풀이 사진 업로드</h4>
+            <p className="mt-2 text-sm text-slate-600">사진 업로드 기능은 다음 단계에서 연결해. 현재는 UX 동선만 활성화했어.</p>
+            <button className="mt-4 h-10 w-full rounded-lg bg-indigo-600 text-white" onClick={() => setUploadOpen(false)}>확인</button>
           </div>
         </div>
       )}
