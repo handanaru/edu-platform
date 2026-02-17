@@ -3,6 +3,11 @@
 import Link from "next/link";
 import { useMemo, useState } from "react";
 
+const DEMO_ACCOUNTS = [
+  { id: "student01", pw: "sodo1234" },
+  { id: "student02", pw: "study1234" },
+];
+
 const missions = [
   { title: "중2 함수 개념 정리", due: "오늘 21:00", status: "진행중", progress: 42, remain: "약 35분" },
   { title: "연립방정식 응용 10문제", due: "내일 18:00", status: "미시작", progress: 0, remain: "약 50분" },
@@ -49,6 +54,7 @@ export default function StudentPage() {
   });
   const [loginId, setLoginId] = useState("");
   const [loginPw, setLoginPw] = useState("");
+  const [loginError, setLoginError] = useState("");
 
   const linePath = useMemo(() => {
     const width = 260;
@@ -64,17 +70,28 @@ export default function StudentPage() {
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
   const doLogin = () => {
-    if (!loginId.trim() || !loginPw.trim()) {
-      alert("아이디랑 비밀번호를 입력해줘.");
+    const id = loginId.trim();
+    const pw = loginPw.trim();
+    if (!id || !pw) {
+      setLoginError("아이디/비밀번호를 입력해줘.");
       return;
     }
+
+    const ok = DEMO_ACCOUNTS.some((acc) => acc.id === id && acc.pw === pw);
+    if (!ok) {
+      setLoginError("임시 계정 정보가 맞지 않아. 다시 확인해줘.");
+      return;
+    }
+
     try { localStorage.setItem("sodomatch-student-auth", "1"); } catch {}
+    setLoginError("");
     setLoggedIn(true);
   };
 
   const doLogout = () => {
     try { localStorage.removeItem("sodomatch-student-auth"); } catch {}
     setLoggedIn(false);
+    setLoginError("");
   };
 
   if (!loggedIn) {
@@ -94,13 +111,19 @@ export default function StudentPage() {
             <input
               value={loginPw}
               onChange={(e) => setLoginPw(e.target.value)}
+              onKeyDown={(e) => { if (e.key === "Enter") doLogin(); }}
               type="password"
               className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
               placeholder="비밀번호"
             />
+            {loginError ? <p className="text-xs text-rose-600">{loginError}</p> : null}
             <button onClick={doLogin} className="h-11 w-full rounded-xl bg-indigo-600 font-semibold text-white hover:bg-indigo-500">
               로그인
             </button>
+            <div className="rounded-lg bg-slate-50 p-2 text-xs text-slate-600">
+              임시 계정: <b>student01 / sodo1234</b><br/>
+              예비 계정: <b>student02 / study1234</b>
+            </div>
             <Link href="/" className="block text-center text-sm text-slate-500 hover:text-slate-800">서비스 소개로 이동</Link>
           </div>
         </section>
