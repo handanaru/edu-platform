@@ -39,6 +39,16 @@ export default function StudentPage() {
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [uploadOpen, setUploadOpen] = useState(false);
   const [activeMenu, setActiveMenu] = useState("dashboard");
+  const [loggedIn, setLoggedIn] = useState(() => {
+    if (typeof window === "undefined") return false;
+    try {
+      return localStorage.getItem("sodomatch-student-auth") === "1";
+    } catch {
+      return false;
+    }
+  });
+  const [loginId, setLoginId] = useState("");
+  const [loginPw, setLoginPw] = useState("");
 
   const linePath = useMemo(() => {
     const width = 260;
@@ -53,6 +63,50 @@ export default function StudentPage() {
     const el = document.getElementById(id);
     el?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
+  const doLogin = () => {
+    if (!loginId.trim() || !loginPw.trim()) {
+      alert("아이디랑 비밀번호를 입력해줘.");
+      return;
+    }
+    try { localStorage.setItem("sodomatch-student-auth", "1"); } catch {}
+    setLoggedIn(true);
+  };
+
+  const doLogout = () => {
+    try { localStorage.removeItem("sodomatch-student-auth"); } catch {}
+    setLoggedIn(false);
+  };
+
+  if (!loggedIn) {
+    return (
+      <main className="min-h-screen bg-[#F8F9FA] text-slate-900 grid place-items-center px-4">
+        <section className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+          <p className="text-2xl font-extrabold tracking-tight text-indigo-600">SODOMATCH</p>
+          <h1 className="mt-2 text-2xl font-bold">학생 로그인</h1>
+          <p className="mt-1 text-sm text-slate-600">학습 대시보드를 보려면 로그인해줘.</p>
+          <div className="mt-5 space-y-3">
+            <input
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+              placeholder="아이디"
+            />
+            <input
+              value={loginPw}
+              onChange={(e) => setLoginPw(e.target.value)}
+              type="password"
+              className="w-full rounded-xl border border-slate-300 px-3 py-2 text-sm"
+              placeholder="비밀번호"
+            />
+            <button onClick={doLogin} className="h-11 w-full rounded-xl bg-indigo-600 font-semibold text-white hover:bg-indigo-500">
+              로그인
+            </button>
+            <Link href="/" className="block text-center text-sm text-slate-500 hover:text-slate-800">서비스 소개로 이동</Link>
+          </div>
+        </section>
+      </main>
+    );
+  }
 
   return (
     <main className="min-h-screen bg-[#F8F9FA] text-slate-900">
@@ -85,6 +139,7 @@ export default function StudentPage() {
             </div>
             <div className="flex items-center gap-2">
               <button className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">🔔</button>
+              <button onClick={doLogout} className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">로그아웃</button>
               <button onClick={() => jump("section-wrongnote", "wrong")} className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">AI 오답노트 열기</button>
               <Link href="/teacher/live?from=student" className="h-11 rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-400">선생님과 실시간 연결</Link>
               <button onClick={() => setUploadOpen(true)} className="h-11 rounded-xl bg-indigo-600 px-4 font-semibold text-white hover:bg-indigo-500">풀이 사진 업로드</button>
