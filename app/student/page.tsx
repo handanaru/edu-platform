@@ -146,7 +146,7 @@ export default function StudentPage() {
             <button onClick={() => jump("section-report", "report")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "report" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>학습 리포트</button>
             <button onClick={() => jump("section-wrongnote", "wrong" )} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "wrong" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>AI 오답 노트</button>
             <button onClick={() => jump("section-submission", "submit")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "submit" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>제출 내역</button>
-            <button onClick={() => alert("계정 관리 기능은 다음 라운드에서 연결할게.")} className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">계정 관리</button>
+            <button onClick={() => jump("section-account", "account")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "account" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>계정 관리</button>
           </nav>
 
           <div className="mt-10 border-t border-slate-200 pt-4 space-y-2">
@@ -251,6 +251,16 @@ export default function StudentPage() {
               </article>
             </aside>
           </div>
+
+          <section id="section-account" className="mt-5 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <h2 className="text-lg font-semibold">계정 관리</h2>
+            <div className="mt-3 grid gap-2 md:grid-cols-3">
+              <button onClick={() => alert("비밀번호 변경 화면은 다음 단계에서 연결할게.")} className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">비밀번호 변경</button>
+              <button onClick={() => alert("알림 수신 설정을 저장했어.")} className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">알림 설정</button>
+              <button onClick={() => alert("학습 데이터 내보내기 요청 완료.")} className="rounded-lg border border-slate-300 px-3 py-2 text-sm hover:bg-slate-50">학습 데이터 내보내기</button>
+            </div>
+          </section>
+
         </section>
       </div>
 
