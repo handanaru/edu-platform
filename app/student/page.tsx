@@ -126,8 +126,9 @@ export default function StudentPage() {
             <button onClick={() => alert("계정 관리 기능은 다음 라운드에서 연결할게.")} className="w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">계정 관리</button>
           </nav>
 
-          <div className="mt-10 border-t border-slate-200 pt-4">
-            <Link href="/" className="text-xs text-slate-500 hover:text-slate-800">서비스 소개로 이동</Link>
+          <div className="mt-10 border-t border-slate-200 pt-4 space-y-2">
+            <button onClick={doLogout} className="w-full rounded-lg border border-slate-300 px-3 py-2 text-left text-sm font-semibold hover:bg-slate-100">로그아웃(상단)</button>
+            <Link href="/" className="block text-xs text-slate-500 hover:text-slate-800">서비스 소개로 이동</Link>
           </div>
         </aside>
 
@@ -139,7 +140,7 @@ export default function StudentPage() {
             </div>
             <div className="flex items-center gap-2">
               <button className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">🔔</button>
-              <button onClick={doLogout} className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">로그아웃</button>
+              <button onClick={doLogout} className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">로그아웃(상단)</button>
               <button onClick={() => jump("section-wrongnote", "wrong")} className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">AI 오답노트 열기</button>
               <Link href="/teacher/live?from=student" className="h-11 rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-semibold text-white hover:bg-orange-400">선생님과 실시간 연결</Link>
               <button onClick={() => setUploadOpen(true)} className="h-11 rounded-xl bg-indigo-600 px-4 font-semibold text-white hover:bg-indigo-500">풀이 사진 업로드</button>
