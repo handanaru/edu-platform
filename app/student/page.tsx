@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { useMemo, useState } from "react";
 
 const missions = [
   { title: "중2 함수 개념 정리", due: "오늘 21:00", status: "진행중", progress: 42 },
@@ -22,17 +25,29 @@ const submissions = [
   { task: "식의 계산 보충", submittedAt: "어제 21:43", state: "피드백완료" },
 ];
 
+const growth = [72, 76, 81, 86, 89];
+
 const statusClass: Record<string, string> = {
   진행중: "bg-blue-100 text-blue-700",
-  미시작: "bg-slate-100 text-slate-700",
+  미시작: "bg-amber-100 text-amber-700",
   완료: "bg-emerald-100 text-emerald-700",
   채점대기: "bg-indigo-100 text-indigo-700",
   피드백완료: "bg-emerald-100 text-emerald-700",
 };
 
 export default function StudentPage() {
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
+
+  const linePath = useMemo(() => {
+    const width = 260;
+    const height = 92;
+    const step = width / (growth.length - 1);
+    const mapY = (v: number) => Math.round(height - ((v - 60) / 40) * 72 - 10);
+    return growth.map((v, i) => `${i === 0 ? "M" : "L"} ${Math.round(i * step)} ${mapY(v)}`).join(" ");
+  }, []);
+
   return (
-    <main className="min-h-screen bg-[#f5f6f8] text-slate-900">
+    <main className="min-h-screen bg-[#F8F9FA] text-slate-900">
       <div className="grid min-h-screen grid-cols-1 lg:grid-cols-[240px_1fr]">
         <aside className="border-r border-slate-200 bg-white px-5 py-6">
           <div className="mb-8">
@@ -60,8 +75,10 @@ export default function StudentPage() {
               <h1 className="text-3xl font-bold">학습 대시보드</h1>
               <p className="mt-1 text-sm text-slate-600">미션, 오답, 제출 상태를 한 번에 확인하고 오늘 할 일을 정리해.</p>
             </div>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
+              <button className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">🔔</button>
               <button className="h-11 rounded-xl border border-slate-300 px-4 text-sm font-semibold hover:bg-slate-100">AI 오답노트 열기</button>
+              <button className="h-11 rounded-xl bg-orange-500 px-4 font-semibold text-white hover:bg-orange-400">선생님과 실시간 연결</button>
               <button className="h-11 rounded-xl bg-indigo-600 px-4 font-semibold text-white hover:bg-indigo-500">풀이 사진 업로드</button>
             </div>
           </header>
@@ -70,7 +87,7 @@ export default function StudentPage() {
             {reports.map((r) => (
               <article key={r.label} className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
                 <p className="text-xs text-slate-500">{r.label}</p>
-                <strong className="mt-1 block text-xl">{r.value}</strong>
+                <strong className="mt-1 block text-3xl leading-none">{r.value}</strong>
               </article>
             ))}
           </section>
@@ -79,7 +96,7 @@ export default function StudentPage() {
             <section className="space-y-4">
               <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <h2 className="text-lg font-semibold">오늘의 미션</h2>
-                <div className="mt-3 space-y-3">
+                <div className="mt-4 space-y-4">
                   {missions.map((m) => (
                     <div key={m.title} className="rounded-xl border border-slate-200 bg-slate-50 p-4">
                       <div className="flex items-start justify-between gap-3">
@@ -107,7 +124,12 @@ export default function StudentPage() {
                         <p className="text-sm font-medium">{s.task}</p>
                         <p className="text-xs text-slate-500">제출: {s.submittedAt}</p>
                       </div>
-                      <span className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusClass[s.state]}`}>{s.state}</span>
+                      <button
+                        onClick={() => s.state === "피드백완료" && setFeedbackOpen(true)}
+                        className={`rounded-full px-2.5 py-1 text-xs font-semibold ${statusClass[s.state]}`}
+                      >
+                        {s.state}
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -117,14 +139,12 @@ export default function StudentPage() {
             <aside className="space-y-4">
               <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
                 <h3 className="text-base font-semibold">나의 성장 그래프</h3>
-                <div className="mt-3 space-y-2">
-                  {[72, 76, 81, 86, 89].map((v, i) => (
-                    <div key={i}>
-                      <div className="mb-1 flex justify-between text-xs text-slate-500"><span>{i + 1}주차</span><span>{v}점</span></div>
-                      <div className="h-2 rounded-full bg-slate-200"><div className="h-full rounded-full bg-emerald-500" style={{ width: `${v}%` }} /></div>
-                    </div>
+                <svg viewBox="0 0 260 92" className="mt-3 w-full">
+                  <path d={linePath} stroke="#14b8a6" strokeWidth="3" fill="none" />
+                  {growth.map((v, i) => (
+                    <circle key={i} cx={(260 / (growth.length - 1)) * i} cy={Math.round(92 - ((v - 60) / 40) * 72 - 10)} r="3.8" fill="#14b8a6" />
                   ))}
-                </div>
+                </svg>
               </article>
 
               <article className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
@@ -134,7 +154,10 @@ export default function StudentPage() {
                     <div key={w.unit} className="rounded-lg border border-slate-200 bg-slate-50 p-3">
                       <p className="text-sm font-medium">{w.unit}</p>
                       <p className="mt-1 text-xs text-slate-600">오류 원인: {w.reason}</p>
-                      <p className="mt-1 text-xs text-indigo-700">재풀이 권장: {w.retry}</p>
+                      <div className="mt-2 flex items-center justify-between">
+                        <p className="text-xs text-indigo-700">재풀이 권장: {w.retry}</p>
+                        <button className="rounded-md border border-slate-300 px-2 py-1 text-xs hover:bg-white">유사 문제 풀기</button>
+                      </div>
                     </div>
                   ))}
                 </div>
@@ -143,6 +166,21 @@ export default function StudentPage() {
           </div>
         </section>
       </div>
+
+      <div className="fixed bottom-4 left-1/2 z-40 -translate-x-1/2 rounded-full bg-indigo-700 px-4 py-2 text-xs font-medium text-white shadow-lg">
+        선생님이 학습을 모니터링 중입니다.
+      </div>
+
+      {feedbackOpen && (
+        <div className="fixed inset-0 z-50 grid place-items-center bg-black/35 p-4" onClick={() => setFeedbackOpen(false)}>
+          <div className="w-full max-w-md rounded-2xl bg-white p-5 shadow-xl" onClick={(e) => e.stopPropagation()}>
+            <h4 className="text-lg font-semibold">피드백 상세</h4>
+            <p className="mt-2 text-sm text-slate-600">선생님 음성 피드백: “2번 풀이에서 식 정리 순서만 고치면 정답이야.”</p>
+            <p className="mt-2 text-sm text-slate-600">판서 캡처: 함수 그래프 교점 표시 완료</p>
+            <button className="mt-4 h-10 w-full rounded-lg bg-indigo-600 text-white" onClick={() => setFeedbackOpen(false)}>닫기</button>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
