@@ -143,6 +143,7 @@ export default function StudentPage() {
           <nav className="space-y-1 text-sm">
             <button onClick={() => jump("section-dashboard", "dashboard")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "dashboard" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>대시보드</button>
             <button onClick={() => jump("section-mission", "mission")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "mission" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>오늘의 미션</button>
+            <Link href="/student/assignments" className="block w-full rounded-lg px-3 py-2 text-left text-slate-700 hover:bg-slate-100">과제 목록</Link>
             <button onClick={() => jump("section-report", "report")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "report" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>학습 리포트</button>
             <button onClick={() => jump("section-wrongnote", "wrong" )} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "wrong" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>AI 오답 노트</button>
             <button onClick={() => jump("section-submission", "submit")} className={`w-full rounded-lg px-3 py-2 text-left ${activeMenu === "submit" ? "bg-indigo-50 font-semibold text-indigo-700" : "text-slate-700 hover:bg-slate-100"}`}>제출 내역</button>

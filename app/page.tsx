@@ -56,14 +56,20 @@ export default function LandingPage() {
           <aside className="rounded-2xl border border-slate-200 bg-white p-5 shadow-md">
             <h2 className="text-lg font-semibold">로그인</h2>
             <p className="mt-1 text-sm text-slate-600">교사/학생 테스트 계정으로 바로 체험</p>
-            <form className="mt-4 space-y-3">
-              <input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" placeholder="아이디 (예: student01)" />
-              <input className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm" placeholder="비밀번호" type="password" />
-              <button type="button" className="h-11 w-full rounded-xl bg-emerald-600 text-sm font-semibold text-white hover:bg-emerald-500">
-                로그인하고 시작하기
-              </button>
-            </form>
-            <p className="mt-3 text-xs text-slate-500">* 테스트 계정은 데모 환경에서 순차 제공</p>
+            <div className="mt-4 space-y-3">
+              <Link href="/login" className="flex h-11 w-full items-center justify-center rounded-xl bg-indigo-600 text-sm font-semibold text-white hover:bg-indigo-500">
+                로그인 화면으로 이동
+              </Link>
+              <div className="grid grid-cols-2 gap-2">
+                <Link href="/teacher" className="flex h-10 items-center justify-center rounded-xl border border-slate-300 text-xs font-semibold hover:bg-slate-50">
+                  교사 데모
+                </Link>
+                <Link href="/student" className="flex h-10 items-center justify-center rounded-xl border border-teal-300 bg-teal-50 text-xs font-semibold text-teal-700 hover:bg-teal-100">
+                  학생 데모
+                </Link>
+              </div>
+            </div>
+            <p className="mt-3 text-xs text-slate-500">* teacher01/1234 또는 student01/1234 로 로그인</p>
           </aside>
         </header>
 
